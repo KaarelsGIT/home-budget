@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.home.home_budget.Model.User;
 import com.home.home_budget.service.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,36 +16,45 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 @RestController
 @RequestMapping("/api/users")
-public class UserController {
+public class UserController extends SharedData {
 
-    private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
+    protected UserController(UserService userService) {
+        super(userService);
     }
 
     @PostMapping("/add")
-    public String addUser(@RequestBody User user) {
+    public ResponseEntity<User> addUser(@RequestBody User user) {
         try {
-            userService.createUser(user);
+            User createdUser = userService.createUser(user);
+            return ResponseEntity.ok(createdUser);
         } catch (Exception e) {
-            return "Error creating user: " + e.getMessage();
+            return ResponseEntity.status(500).build();
         }
-        return "User created successfully";
+    }
+
+    @PostMapping("/update/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+        try {
+            Optional<User> existingUser = userService.getUserById(id);
+            if (existingUser.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            User userToUpdate = existingUser.get();
+            userToUpdate.setUsername(updatedUser.getUsername());
+
+            User uppdatedUser = userService.updateUser(userToUpdate);
+            return ResponseEntity.ok(uppdatedUser);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
     }
 
     @GetMapping("/all")
     public List<User> getAllUsers() {
-        List<User> users = new ArrayList<>();
-        try {
-            users = userService.getAllUsers();
-        } catch (Exception e) {
-            return null;
-        }
-        return users;
+       return super.getUsers();
     }
 
     @DeleteMapping("/delete/{id}")
@@ -59,5 +67,5 @@ public class UserController {
             return ResponseEntity.ok().build();
         }
     }
-    
+
 }
