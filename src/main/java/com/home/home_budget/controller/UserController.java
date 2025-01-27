@@ -34,6 +34,20 @@ public class UserController extends SharedData {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<User> viewUser(@PathVariable Long id) {
+        try {
+            Optional<User> user = userService.getUserById(id);
+            if (user.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            } else {
+                return ResponseEntity.ok(user.get());
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
     @PostMapping("/update/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
         try {
