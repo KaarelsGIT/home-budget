@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/api/users")
 public class UserController extends SharedData {
 
-    protected UserController(UserService userService) {
+    private UserController(UserService userService) {
         super(userService);
     }
 
@@ -38,11 +38,10 @@ public class UserController extends SharedData {
     public ResponseEntity<User> viewUser(@PathVariable Long id) {
         try {
             Optional<User> user = userService.getUserById(id);
-            if (user.isEmpty()) {
+            if (user.isEmpty())
                 return ResponseEntity.notFound().build();
-            } else {
+            else
                 return ResponseEntity.ok(user.get());
-            }
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
@@ -52,9 +51,8 @@ public class UserController extends SharedData {
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
         try {
             Optional<User> existingUser = userService.getUserById(id);
-            if (existingUser.isEmpty()) {
+            if (existingUser.isEmpty())
                 return ResponseEntity.notFound().build();
-            }
 
             User userToUpdate = existingUser.get();
             userToUpdate.setUsername(updatedUser.getUsername());
