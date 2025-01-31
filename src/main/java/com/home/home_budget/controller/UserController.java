@@ -1,5 +1,6 @@
 package com.home.home_budget.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,13 +17,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/users")
-public class UserController extends SharedData {
+public class UserController {
 
-    private UserController(UserService userService) {
-        super(userService);
-    }
+    private final UserService userService;
 
     @PostMapping("/add")
     public ResponseEntity<User> addUser(@RequestBody User user) {
@@ -40,24 +40,24 @@ public class UserController extends SharedData {
             Optional<User> user = userService.getUserById(id);
             if (user.isEmpty())
                 return ResponseEntity.notFound().build();
-            else
-                return ResponseEntity.ok(user.get());
+
+            return ResponseEntity.ok(user.get());
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
     }
 
     @PostMapping("/update/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
         try {
-            Optional<User> existingUser = userService.getUserById(id);
-            if (existingUser.isEmpty())
+            Optional<User> existing = userService.getUserById(id);
+            if (existing.isEmpty())
                 return ResponseEntity.notFound().build();
 
-            User userToUpdate = existingUser.get();
-            userToUpdate.setUsername(updatedUser.getUsername());
+            User toUpdate = existing.get();
+            toUpdate.setUsername(user.getUsername());
 
-            User uppdatedUser = userService.updateUser(userToUpdate);
+            User uppdatedUser = userService.updateUser(toUpdate);
             return ResponseEntity.ok(uppdatedUser);
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
@@ -65,18 +65,26 @@ public class UserController extends SharedData {
     }
 
     @GetMapping("/all")
-    public List<User> getAllUsers() {
-       return super.getUsers();
+    public ResponseEntity<List<User>> getAllUsers() {
+        try {
+            List<User> users = userService.getAllUsers();
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        Optional<User> user = userService.getUserById(id);
-        if (user.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        } else {
+    public ResponseEntity deleteUser(@PathVariable Long id) {
+        try {
+            Optional<User> user = userService.getUserById(id);
+            if (user.isEmpty())
+                return ResponseEntity.notFound().build();
+
             userService.deleteUser(id);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body("User deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
         }
     }
 

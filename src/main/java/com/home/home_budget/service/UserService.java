@@ -3,10 +3,12 @@ package com.home.home_budget.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.home.home_budget.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.home.home_budget.Model.User;
-import com.home.home_budget.repository.UserRepository;
 
 @Service
 public class UserService {
