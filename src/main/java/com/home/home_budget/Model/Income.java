@@ -53,18 +53,4 @@ public class Income {
     protected void onUpdate() {
         this.updated = LocalDateTime.now();
     }
-
-    @Override
-    public String toString() {
-        return "Income{" +
-                "id=" + id +
-                ", category=" + category +
-                ", date=" + date +
-                ", user=" + user +
-                ", amount=" + amount +
-                ", description='" + description + '\'' +
-                ", created=" + created +
-                ", updated=" + updated +
-                '}';
-    }
 }
