@@ -1,11 +1,13 @@
 package com.home.home_budget.controller;
 
 import com.home.home_budget.Model.Income;
+import com.home.home_budget.dto.IncomesResponseDTO;
 import com.home.home_budget.service.IncomeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,10 +43,12 @@ public class IncomeController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Income>> getAllIncomes() {
+    public ResponseEntity<IncomesResponseDTO> getAllIncomes() {
         try {
             List<Income> incomes = incomeService.getAllIncomes();
-            return ResponseEntity.ok(incomes);
+            BigDecimal total = incomeService.getTotalIncome();
+            IncomesResponseDTO response = new IncomesResponseDTO(incomes, total);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }

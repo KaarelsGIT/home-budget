@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -32,7 +33,7 @@ public class Income {
     private User user;
 
     @Column(name = "amount")
-    private double amount;
+    private BigDecimal amount;
 
     @Column(name = "description")
     private String description;

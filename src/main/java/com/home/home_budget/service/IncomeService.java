@@ -2,8 +2,10 @@ package com.home.home_budget.service;
 
 import com.home.home_budget.Model.Income;
 import com.home.home_budget.repository.IncomeRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,35 +34,24 @@ public class IncomeService {
         return incomeRepository.findByYear(year);
     }
 
-//    public List<Income> getIncomeByMonth(String month) {
-//        return incomeRepository.findByMonth(month);
-//    }
-//
-//    public List<Income> getIncomesByCategory(String category) {
-//        return incomeRepository.findByCategoryName(category);
-//    }
-//
-//    public List<Income> getIncomesByYearAndMonth(int year, String month) {
-//        return incomeRepository.findByYearAndMonth(year, month);
-//    }
-//
-//    public List<Income> getIncomeByYearAndCategory(int year, String category) {
-//        return incomeRepository.findByYearAndCategory(year, category);
-//    }
-//
-//    public  List<Income> getIncomesByMonthAndCategory(String monthName, String category) {
-//        return incomeRepository.findByMonthAndCategory(monthName, category);
-//    }
-//
-//    public List<Income> getIncomesByYearMonthAndCategory (int year, String month, String category) {
-//        return incomeRepository.findByYearMonthAndCategory(year, month, category);
-//    }
-
     public Income updateIncome(Income income) {
         return incomeRepository.save(income);
     }
 
     public void deleteIncome(Long id) {
         incomeRepository.deleteById(id);
+    }
+
+    public List<Income> getSortedIncomes(String setOrder, String filterBy) {
+        // sortOrder = "asc" / "desc"
+        // sortBy = "year" / "date" / "category" / "user"
+        return incomeRepository.findAll(Sort.by(setOrder, filterBy));
+
+    }
+
+    public BigDecimal getTotalIncome() {
+        return incomeRepository.findAll().stream()
+                .map(Income::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }
