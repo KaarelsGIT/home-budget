@@ -59,8 +59,14 @@ public class CategoryController {
     }
 
     @GetMapping("/all")
-    public List<Category> getAllCategories() {
-        return categoryService.getAllCategories();
+    public ResponseEntity<List<Category>> getAllFilteredAndSortedCategories(@RequestParam(required = false) String type,
+                                                                            @RequestParam(required = false) String sortOrder) {
+        try {
+            List<Category> categories = categoryService.getFilteredAndSortedCategories(type, sortOrder);
+            return ResponseEntity.ok(categories);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
     }
 
     @DeleteMapping("/delete/{id}")
