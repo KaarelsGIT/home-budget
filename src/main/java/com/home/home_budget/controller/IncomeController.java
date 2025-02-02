@@ -7,6 +7,9 @@ import com.home.home_budget.dto.IncomesResponseDTO;
 import com.home.home_budget.service.CategoryService;
 import com.home.home_budget.service.IncomeService;
 import com.home.home_budget.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,7 +65,9 @@ public class IncomeController {
             @RequestParam(required = false) Long userId,
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) LocalDate date,
-            @RequestParam(required = false) Integer year) {
+            @RequestParam(required = false) Integer year,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
         try {
             User user = null;
@@ -80,9 +85,11 @@ public class IncomeController {
                     category = optionalCategory.get();
             }
 
-            List<Income> incomes = incomeService.getFilteredAndSortedIncomes(user, date, category, sortBy, sortOrder, year);
-            BigDecimal total = incomeService.getTotalIncomeAmount(incomes);
-            IncomesResponseDTO response = new IncomesResponseDTO(incomes, total);
+            Pageable pageable = PageRequest.of(page, size);
+
+            Page<Income> incomePage = incomeService.getPagedAndFilteredAndSortedIncomes(user, date, category, sortBy, sortOrder, year, pageable);
+            BigDecimal total = incomeService.getTotalFilteredIncome(user, date, category, year);
+            IncomesResponseDTO response = new IncomesResponseDTO(incomePage, total);
             return ResponseEntity.ok((response));
         } catch (Exception e) {
             return ResponseEntity.status(500).build();

@@ -4,6 +4,9 @@ import com.home.home_budget.Model.Category;
 import com.home.home_budget.Model.Income;
 import com.home.home_budget.Model.User;
 import com.home.home_budget.repository.IncomeRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -41,12 +44,13 @@ public class IncomeService {
         incomeRepository.deleteById(id);
     }
 
-    public List<Income> getFilteredAndSortedIncomes(User user,
-                                                    LocalDate date,
-                                                    Category category,
-                                                    String sortBy,
-                                                    String sortOrder,
-                                                    Integer year
+    public Page<Income> getPagedAndFilteredAndSortedIncomes(User user,
+                                                            LocalDate date,
+                                                            Category category,
+                                                            String sortBy,
+                                                            String sortOrder,
+                                                            Integer year,
+                                                            Pageable pageable
     ) {
         if (sortBy == null)
             sortBy = "date";
@@ -62,49 +66,48 @@ public class IncomeService {
         }
 
         Sort sort = Sort.by(direction, sortBy);
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
         if (year != null) {
-            return getFilteredAndSortedIncomesByYear(user, category, year, sort);
+            return getPagedAndFilteredAndSortedIncomesByYear(user, category, year, pageable);
         } else {
-            return getFilteredAndSortedIncomesWithoutYear(user, date, category, sort);
+            return getFilteredAndSortedIncomesWithoutYear(user, date, category, pageable);
         }
     }
 
-    private List<Income> getFilteredAndSortedIncomesByYear(User user, Category category, Integer year, Sort sort) {
+    private Page<Income> getPagedAndFilteredAndSortedIncomesByYear(User user, Category category, Integer year, Pageable pageable) {
         if (user != null && category != null) {
-            return incomeRepository.findByUserAndYearAndCategory(user, year, category, sort);
+            return incomeRepository.findByUserAndYearAndCategory(user, year, category, pageable);
         } else if (user != null) {
-            return incomeRepository.findByUserAndYear(user, year, sort);
+            return incomeRepository.findByUserAndYear(user, year, pageable);
         } else if (category != null) {
-            return incomeRepository.findByCategoryAndYear(category, year, sort);
+            return incomeRepository.findByCategoryAndYear(category, year, pageable);
         } else {
-            return incomeRepository.findByYear(year, sort);
+            return incomeRepository.findByYear(year, pageable);
         }
     }
 
-    private List<Income> getFilteredAndSortedIncomesWithoutYear(User user, LocalDate date, Category category, Sort sort) {
+    private Page<Income> getFilteredAndSortedIncomesWithoutYear(User user, LocalDate date, Category category, Pageable pageable) {
         if (user != null && date != null && category != null) {
-            return incomeRepository.findByUserAndDateAndCategoryId(user, date, category, sort);
+            return incomeRepository.findByUserAndDateAndCategoryId(user, date, category, pageable);
         } else if (user != null && date != null) {
-            return incomeRepository.findByUserAndDate(user, date, sort);
+            return incomeRepository.findByUserAndDate(user, date, pageable);
         } else if (user != null && category != null) {
-            return incomeRepository.findByUserAndCategory(user, category, sort);
+            return incomeRepository.findByUserAndCategory(user, category, pageable);
         } else if (date != null && category != null) {
-            return incomeRepository.findByDateAndCategory(date, category, sort);
+            return incomeRepository.findByDateAndCategory(date, category, pageable);
         } else if (user != null) {
-            return incomeRepository.findByUser(user, sort);
+            return incomeRepository.findByUser(user, pageable);
         } else if (date != null) {
-            return incomeRepository.findByDate(date, sort);
+            return incomeRepository.findByDate(date, pageable);
         } else if (category != null) {
-            return incomeRepository.findByCategory(category, sort);
+            return incomeRepository.findByCategory(category, pageable);
         } else {
-            return incomeRepository.findAll(sort);
+            return incomeRepository.findAll(pageable);
         }
     }
 
-    public BigDecimal getTotalIncomeAmount(List<Income> incomes) {
-        return incomes.stream()
-                .map(Income::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    public BigDecimal getTotalFilteredIncome(User user, LocalDate date, Category category, Integer year) {
+        return incomeRepository.getTotalFilteredIncome(user, category, date, year);
     }
 }
