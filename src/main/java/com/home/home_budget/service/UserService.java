@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.home.home_budget.repository.UserRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,22 @@ public class UserService {
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    public List<User> getSortedUsers(String sortOrder) {
+        if (sortOrder == null)
+            sortOrder = "asc";
+
+        Sort.Direction direction;
+        if (sortOrder.equalsIgnoreCase("desc"))
+            direction = Sort.Direction.DESC;
+        else
+           direction = Sort.Direction.ASC;
+
+        Sort sort = Sort.by(direction, "username");
+
+        return userRepository.findAll(sort);
+
     }
 
     public User updateUser(User user) {

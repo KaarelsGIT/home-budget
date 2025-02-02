@@ -60,9 +60,9 @@ public class CategoryController {
 
     @GetMapping("/all")
     public ResponseEntity<List<Category>> getAllFilteredAndSortedCategories(@RequestParam(required = false) String type,
-                                                                            @RequestParam(required = false) String sortOrder) {
+                                                                            @RequestParam(required = false) String sort) {
         try {
-            List<Category> categories = categoryService.getFilteredAndSortedCategories(type, sortOrder);
+            List<Category> categories = categoryService.getFilteredAndSortedCategories(type, sort);
             return ResponseEntity.ok(categories);
         } catch (Exception e) {
             return ResponseEntity.status(500).build();

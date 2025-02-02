@@ -1,8 +1,7 @@
 package com.home.home_budget.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.home.home_budget.Model.User;
 import com.home.home_budget.service.UserService;
@@ -11,11 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @RequiredArgsConstructor
 @RestController
@@ -65,9 +59,9 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<User>> getSortedAllUsers(@RequestParam(required = false) String sort) {
         try {
-            List<User> users = userService.getAllUsers();
+            List<User> users = userService.getSortedUsers(sort);
             return ResponseEntity.ok(users);
         } catch (Exception e) {
             return ResponseEntity.status(500).build();

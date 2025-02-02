@@ -35,14 +35,6 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    public Category updateCategory(Category category) {
-        return categoryRepository.save(category);
-    }
-
-    public void deleteCategory(Long id) {
-        categoryRepository.deleteById(id);
-    }
-
     public List<Category> getFilteredAndSortedCategories (String type, String sortOrder) {
         if (sortOrder == null)
             sortOrder = "asc";
@@ -51,7 +43,7 @@ public class CategoryService {
         if (sortOrder.equalsIgnoreCase("desc"))
             direction = Sort.Direction.DESC;
         else
-           direction = Sort.Direction.ASC;
+            direction = Sort.Direction.ASC;
 
         Sort sort = Sort.by(direction, "name");
 
@@ -65,5 +57,13 @@ public class CategoryService {
         } catch (IllegalArgumentException e) {
             return new ArrayList<>();
         }
+    }
+
+    public Category updateCategory(Category category) {
+        return categoryRepository.save(category);
+    }
+
+    public void deleteCategory(Long id) {
+        categoryRepository.deleteById(id);
     }
 }
