@@ -44,13 +44,8 @@ public class IncomeService {
         incomeRepository.deleteById(id);
     }
 
-    public Page<Income> getPagedAndFilteredAndSortedIncomes(User user,
-                                                            LocalDate date,
-                                                            Category category,
-                                                            String sortBy,
-                                                            String sortOrder,
-                                                            Integer year,
-                                                            Pageable pageable
+    public Page<Income> getPagedAndFilteredAndSortedIncomes(
+            User user, LocalDate date, Category category, String sortBy, String sortOrder, Integer year, Pageable pageable
     ) {
         if (sortBy == null)
             sortBy = "date";

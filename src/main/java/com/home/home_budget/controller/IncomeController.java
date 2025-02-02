@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -60,15 +59,11 @@ public class IncomeController {
 
     @GetMapping("/all")
     public ResponseEntity<IncomesResponseDTO> getFilteredAndSortedIncomes(
-            @RequestParam(required = false) String sortBy,
-            @RequestParam(required = false) String sortOrder,
-            @RequestParam(required = false) Long userId,
-            @RequestParam(required = false) Long categoryId,
-            @RequestParam(required = false) LocalDate date,
-            @RequestParam(required = false) Integer year,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-
+            @RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortOrder,
+            @RequestParam(required = false) Long userId,  @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) LocalDate date, @RequestParam(required = false) Integer year,
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size
+    ) {
         try {
             User user = null;
             Category category = null;

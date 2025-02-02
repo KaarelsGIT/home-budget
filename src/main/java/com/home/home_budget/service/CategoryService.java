@@ -3,6 +3,9 @@ package com.home.home_budget.service;
 import com.home.home_budget.Model.Category;
 import com.home.home_budget.Model.CategoryType;
 import com.home.home_budget.repository.CategoryRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +38,7 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    public List<Category> getFilteredAndSortedCategories (String type, String sortOrder) {
+    public Page<Category> getFilteredAndSortedCategories (String type, String sortOrder, Pageable pageable) {
         if (sortOrder == null)
             sortOrder = "asc";
 
@@ -46,16 +49,17 @@ public class CategoryService {
             direction = Sort.Direction.ASC;
 
         Sort sort = Sort.by(direction, "name");
+        pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
         if (type == null)
-            return categoryRepository.findAll(sort);
+            return categoryRepository.findAll(pageable);
 
         CategoryType categoryType;
         try {
             categoryType = CategoryType.valueOf(type.toUpperCase());
-            return categoryRepository.findByType(categoryType, sort);
+            return categoryRepository.findByType(categoryType, pageable);
         } catch (IllegalArgumentException e) {
-            return new ArrayList<>();
+            return Page.empty(pageable);
         }
     }
 

@@ -3,6 +3,9 @@ package com.home.home_budget.controller;
 import com.home.home_budget.Model.Category;
 import com.home.home_budget.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,10 +62,13 @@ public class CategoryController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Category>> getAllFilteredAndSortedCategories(@RequestParam(required = false) String type,
-                                                                            @RequestParam(required = false) String sort) {
+    public ResponseEntity<Page<Category>> getAllFilteredAndSortedCategories(@RequestParam(required = false) String type,
+                                                                            @RequestParam(required = false) String sort,
+                                                                            @RequestParam(defaultValue = "0") int page,
+                                                                            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
         try {
-            List<Category> categories = categoryService.getFilteredAndSortedCategories(type, sort);
+            Page<Category> categories = categoryService.getFilteredAndSortedCategories(type, sort, pageable);
             return ResponseEntity.ok(categories);
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
