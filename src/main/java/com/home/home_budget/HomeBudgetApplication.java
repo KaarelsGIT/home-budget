@@ -10,4 +10,8 @@ public class HomeBudgetApplication {
 		SpringApplication.run(HomeBudgetApplication.class, args);
 	}
 
+	//TODO:
+	// 1) Need expense section
+	// 2) Need Summary section
+
 }
