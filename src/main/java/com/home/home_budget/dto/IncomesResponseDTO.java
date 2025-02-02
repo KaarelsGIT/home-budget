@@ -6,13 +6,12 @@ import lombok.Data;
 import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @AllArgsConstructor
 @Data
 public class IncomesResponseDTO {
 
-    private Page<Income> incomes;
+    private Page<Income> incomePage;
     private BigDecimal totalAmount;
 
 }
