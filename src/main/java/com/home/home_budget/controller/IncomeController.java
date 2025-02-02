@@ -56,13 +56,14 @@ public class IncomeController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<IncomesResponseDTO> getFilteredAndSortedIncomes(@RequestParam(required = false) String sortBy,
-                                                                          @RequestParam(required = false) String sortOrder,
-                                                                          @RequestParam(required = false) Long userId,
-                                                                          @RequestParam(required = false) Long categoryId,
-                                                                          @RequestParam(required = false) LocalDate date,
-                                                                          @RequestParam(required = false) Integer year
-    ) {
+    public ResponseEntity<IncomesResponseDTO> getFilteredAndSortedIncomes(
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortOrder,
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) LocalDate date,
+            @RequestParam(required = false) Integer year) {
+
         try {
             User user = null;
             Category category = null;
@@ -86,7 +87,6 @@ public class IncomeController {
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
-
     }
 
     @PostMapping("/update/{id}")
