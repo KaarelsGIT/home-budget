@@ -6,8 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "incomes")
+@Table(name = "expenses")
 @NoArgsConstructor
 @Data
-public class Income  extends Transaction<Income> {
+public class Expense extends Transaction<Expense> {
 }

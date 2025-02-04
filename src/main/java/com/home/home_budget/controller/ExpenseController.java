@@ -1,17 +1,17 @@
 package com.home.home_budget.controller;
 
-import com.home.home_budget.Model.Income;
+import com.home.home_budget.Model.Expense;
 import com.home.home_budget.service.CategoryService;
-import com.home.home_budget.service.IncomeService;
+import com.home.home_budget.service.ExpenseService;
 import com.home.home_budget.service.UserService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/incomes")
-public class IncomeController extends TransactionController<Income> {
+@RequestMapping("/api/expenses")
+public class ExpenseController extends TransactionController<Expense> {
 
-    public IncomeController(IncomeService service, UserService userService, CategoryService categoryService) {
+    public ExpenseController(ExpenseService service, UserService userService, CategoryService categoryService) {
         super(service, userService, categoryService);
     }
 }
