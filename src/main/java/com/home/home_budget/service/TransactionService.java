@@ -22,13 +22,9 @@ public class TransactionService<T extends Transaction<T>> {
         this.repository = repository;
     }
 
-   public T addTransaction(T transaction) {
+   public T saveTransaction(T transaction) {
        return repository.save(transaction);
    }
-
-    public T updateTransaction(T transaction) {
-        return repository.save(transaction);
-    }
 
     public void deleteTransaction(Long id) {
         repository.deleteById(id);

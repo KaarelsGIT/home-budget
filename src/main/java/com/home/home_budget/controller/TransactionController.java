@@ -31,7 +31,7 @@ public abstract class TransactionController <T extends Transaction<T>> {
 
     @PostMapping("/add")
     public ResponseEntity<T> addTransaction(@RequestBody T transaction) {
-        return ResponseEntity.ok(service.addTransaction(transaction));
+        return ResponseEntity.ok(service.saveTransaction(transaction));
     }
 
     @GetMapping("/{id}")
@@ -61,6 +61,8 @@ public abstract class TransactionController <T extends Transaction<T>> {
             Page<T> transactions = service.getFilteredAndSortedTransactions(userId, date, categoryId, year, sortBy, sortOrder, pageable);
             BigDecimal pageTotal = service.getpageTotalTransactionAmount(transactions);
             BigDecimal allTotal = service.getAllTotalFilteredTransactionAmount(userId, date, categoryId, year);
+
+            //FOR TESTING TOTALS:
             System.out.println("pageTotal: " + pageTotal + " €");
             System.out.println("Total: " + allTotal + " €");
 
@@ -85,7 +87,7 @@ public abstract class TransactionController <T extends Transaction<T>> {
             toUpdate.setDescription(transaction.getDescription());
             toUpdate.setUser(transaction.getUser());
 
-            T updated = service.updateTransaction(toUpdate);
+            T updated = service.saveTransaction(toUpdate);
             return ResponseEntity.ok(updated);
         } catch (Exception e) {
             return ResponseEntity.status(500).build();

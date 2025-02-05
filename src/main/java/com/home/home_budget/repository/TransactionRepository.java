@@ -16,12 +16,12 @@ public interface TransactionRepository<T extends Transaction<T>> extends JpaRepo
 
 
     Page<T> findByUserIdAndDateAndCategoryId(Long userId, LocalDate date, Long categoryId, Pageable pageable);
-   Page<T> findByUserIdAndDate(Long userId, LocalDate date, Pageable pageable);
-   Page<T> findByUserIdAndCategoryId(Long userId, Long categoryId, Pageable pageable);
-   Page<T> findByDateAndCategoryId(LocalDate date, Long categoryId, Pageable pageable);
-   Page<T> findByUserId(Long userId, Pageable pageable);
-   Page<T> findByDate(LocalDate date, Pageable pageable);
-   Page<T> findByCategoryId(Long categoryId, Pageable pageable);
+    Page<T> findByUserIdAndDate(Long userId, LocalDate date, Pageable pageable);
+    Page<T> findByUserIdAndCategoryId(Long userId, Long categoryId, Pageable pageable);
+    Page<T> findByDateAndCategoryId(LocalDate date, Long categoryId, Pageable pageable);
+    Page<T> findByUserId(Long userId, Pageable pageable);
+    Page<T> findByDate(LocalDate date, Pageable pageable);
+    Page<T> findByCategoryId(Long categoryId, Pageable pageable);
 
     @Query("SELECT t FROM #{#entityName} t WHERE t.user.id = :userId AND FUNCTION('YEAR', t.date) = :year " +
             "AND t.category.id = :categoryId")
