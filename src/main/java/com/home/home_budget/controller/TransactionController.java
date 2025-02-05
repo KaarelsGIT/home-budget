@@ -51,8 +51,8 @@ public abstract class TransactionController <T extends Transaction<T>> {
             Pageable pageable = PageRequest.of(page, size);
 
             Page<T> transactions = service.getFilteredAndSortedTransactions(userId, date, categoryId, year, sortBy, sortOrder, pageable);
-            BigDecimal pageTotal = service.getpageTotalTransactionAmount(transactions);
-            BigDecimal allTotal = service.getAllTotalFilteredTransactionAmount(userId, date, categoryId, year);
+            BigDecimal pageTotal = service.getPageTotalTransactionAmount(transactions);
+            BigDecimal allTotal = service.getAllTotalFilteredTransactionAmount(userId, date, categoryId, year, pageable);
 
             //FOR TESTING TOTALS:
             System.out.println("pageTotal: " + pageTotal + " €");

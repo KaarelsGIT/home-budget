@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,7 +43,7 @@ public class TransactionService<T extends Transaction<T>> {
             sortOrder = "desc";
 
         Sort.Direction direction;
-        if (sortOrder != null && sortOrder.equalsIgnoreCase("desc")) {
+        if (sortOrder.equalsIgnoreCase("desc")) {
             direction = Sort.Direction.DESC;
         } else {
             direction = Sort.Direction.ASC;
@@ -100,25 +99,21 @@ public class TransactionService<T extends Transaction<T>> {
         }
     }
 
-    public BigDecimal getpageTotalTransactionAmount(Page<T> transactions) {
-        return transactions.stream()
-                .map(Transaction::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    public BigDecimal getPageTotalTransactionAmount(Page<T> transactions) {
+        return transactions.stream().map(Transaction::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public BigDecimal getAllTotalFilteredTransactionAmount(Long userId, LocalDate date, Long categoryId, Integer year) {
-        List<T> allFilteredTransactions;
+    public BigDecimal getAllTotalFilteredTransactionAmount(Long userId, LocalDate date, Long categoryId, Integer year, Pageable pageable) {
+        pageable = Pageable.unpaged();
+        Page<T> allFilteredTransactions;
 
         if (year != null) {
-            allFilteredTransactions = repository.getListOfTransactionsFilteredByYear(userId, year, categoryId);
+            allFilteredTransactions = getTransactionsFilteredByYear(userId, date, categoryId, year, pageable);
         } else {
-            allFilteredTransactions = repository.getListOfTransactionsWithoutYearFilter(userId, date, categoryId);
+            allFilteredTransactions = getTransactionsWithoutYearFilter(userId, date, categoryId, pageable);
         }
 
-
-        return allFilteredTransactions.stream()
-                .map(Transaction::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return allFilteredTransactions.stream().map(Transaction::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
 }
