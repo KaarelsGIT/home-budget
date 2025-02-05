@@ -11,7 +11,6 @@ public class HomeBudgetApplication {
 	}
 
 	//TODO:
-	// 1) Need expense section
-	// 2) Need Summary section
+	// 1) Need Summary section
 
 }

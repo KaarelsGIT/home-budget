@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 public class TransactionResponseDTO<T extends Transaction<T>> {
 
     private Page<T> transactionPage;
-    private BigDecimal totalAmount;
+    private BigDecimal pageTotal;
+    private BigDecimal AllTotal;
 
 }
