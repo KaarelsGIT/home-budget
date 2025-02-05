@@ -2,9 +2,7 @@ package com.home.home_budget.controller;
 
 import com.home.home_budget.Model.Transaction;
 import com.home.home_budget.dto.TransactionResponseDTO;
-import com.home.home_budget.service.CategoryService;
 import com.home.home_budget.service.TransactionService;
-import com.home.home_budget.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,15 +16,9 @@ import java.util.Optional;
 public abstract class TransactionController <T extends Transaction<T>> {
 
     private final TransactionService<T> service;
-    private final UserService userService;
-    private final CategoryService categoryService;
 
-    public TransactionController(TransactionService<T> service,
-                                 UserService userService,
-                                 CategoryService categoryService) {
+    public TransactionController(TransactionService<T> service) {
         this.service = service;
-        this.userService = userService;
-        this.categoryService = categoryService;
     }
 
     @PostMapping("/add")

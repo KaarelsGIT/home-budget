@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/incomes")
 public class IncomeController extends TransactionController<Income> {
 
-    public IncomeController(IncomeService service, UserService userService, CategoryService categoryService) {
-        super(service, userService, categoryService);
+    public IncomeController(IncomeService service) {
+        super(service);
     }
 }

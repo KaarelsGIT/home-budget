@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/expenses")
 public class ExpenseController extends TransactionController<Expense> {
 
-    public ExpenseController(ExpenseService service, UserService userService, CategoryService categoryService) {
-        super(service, userService, categoryService);
+    public ExpenseController(ExpenseService service) {
+        super(service);
     }
 }
