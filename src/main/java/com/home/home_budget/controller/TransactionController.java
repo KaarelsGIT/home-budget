@@ -42,10 +42,14 @@ public abstract class TransactionController <T extends Transaction<T>> {
 
     @GetMapping("/all")
     public ResponseEntity<TransactionResponseDTO<T>> getFilteredAndSortedIncomes(
-            @RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortOrder,
-            @RequestParam(required = false) Long userId, @RequestParam(required = false) Long categoryId,
-            @RequestParam(required = false) LocalDate date, @RequestParam(required = false) Integer year,
-            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String sortOrder,
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) LocalDate date,
+            @RequestParam(required = false) Integer year,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
     ) {
         try {
             Pageable pageable = PageRequest.of(page, size);
@@ -53,10 +57,6 @@ public abstract class TransactionController <T extends Transaction<T>> {
             Page<T> transactions = service.getFilteredAndSortedTransactions(userId, date, categoryId, year, sortBy, sortOrder, pageable);
             BigDecimal pageTotal = service.getPageTotalTransactionAmount(transactions);
             BigDecimal allTotal = service.getAllTotalFilteredTransactionAmount(userId, date, categoryId, year, pageable);
-
-            //FOR TESTING TOTALS:
-            System.out.println("pageTotal: " + pageTotal + " €");
-            System.out.println("Total: " + allTotal + " €");
 
             TransactionResponseDTO<T> responseDTO = new TransactionResponseDTO<>(transactions, pageTotal, allTotal);
             return ResponseEntity.ok((responseDTO));
