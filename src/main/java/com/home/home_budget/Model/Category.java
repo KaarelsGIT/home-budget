@@ -26,4 +26,7 @@ public class Category {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "recurring_payment")
+    private boolean recurringPayment = false;
+
 }

@@ -34,6 +34,10 @@ public class CategoryService {
         return categoryRepository.findByName(categoryName);
     }
 
+    public Optional<Category> getCategoryByRecurringPayment(Boolean recurringPayment) {
+        return categoryRepository.findByRecurringPayment(recurringPayment);
+    }
+
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
     }

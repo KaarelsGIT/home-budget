@@ -33,7 +33,6 @@ public class TransactionService<T extends Transaction<T>> {
         return repository.findById(id);
     }
 
-    //TODO: FIX BROKEN METHODS!
     public Page<T> getFilteredAndSortedTransactions(Long userId, LocalDate date, Long categoryId, Integer year,
                                                     String sortBy, String sortOrder, Pageable pageable) {
         if (sortBy == null)
