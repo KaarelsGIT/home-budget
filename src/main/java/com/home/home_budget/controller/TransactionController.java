@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public abstract class TransactionController <T extends Transaction<T>> {
@@ -35,6 +36,16 @@ public abstract class TransactionController <T extends Transaction<T>> {
             }
 
             return ResponseEntity.ok(transaction.get());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @GetMapping("/years")
+    public ResponseEntity<List<Integer>> getListOfYears() {
+        try {
+            List<Integer> years = service.getListOfYears();
+            return ResponseEntity.ok(years);
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }

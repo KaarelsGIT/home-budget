@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -115,5 +116,8 @@ public class TransactionService<T extends Transaction<T>> {
         return allFilteredTransactions.stream().map(Transaction::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
+    public List<Integer> getListOfYears() {
+        return repository.findListOfYears();
+    }
 }
 

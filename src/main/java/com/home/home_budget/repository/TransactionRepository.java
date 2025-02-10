@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.query.Param;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -35,4 +34,6 @@ public interface TransactionRepository<T extends Transaction<T>> extends JpaRepo
     @Query("SELECT t FROM #{#entityName} t WHERE FUNCTION('YEAR', t.date) = :year")
     Page<T> findByYear(@Param("year") Integer year, Pageable pageable);
 
+    @Query("SELECT DISTINCT FUNCTION('YEAR', t.date) FROM #{#entityName} t ORDER BY FUNCTION('YEAR', t.date) DESC")
+    List<Integer> findListOfYears();
 }
