@@ -67,6 +67,7 @@ public abstract class TransactionController <T extends Transaction<T>> {
 
             Page<T> transactions = service.getFilteredAndSortedTransactions(userId, date, categoryId, year, sortBy, sortOrder, pageable);
             BigDecimal pageTotal = service.getPageTotalTransactionAmount(transactions);
+//            BigDecimal allTotal = service.getAllTotalFilteredTransactionAmount(userId, date, categoryId, year, pageable);
             BigDecimal allTotal = service.getAllTotalFilteredTransactionAmount(userId, date, categoryId, year, pageable);
 
             TransactionResponseDTO<T> responseDTO = new TransactionResponseDTO<>(transactions, pageTotal, allTotal);

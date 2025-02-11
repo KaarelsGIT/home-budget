@@ -36,82 +36,35 @@ public class TransactionService<T extends Transaction<T>> {
 
     public Page<T> getFilteredAndSortedTransactions(Long userId, LocalDate date, Long categoryId, Integer year,
                                                     String sortBy, String sortOrder, Pageable pageable) {
-        if (sortBy == null)
-            sortBy = "date";
+        if (sortBy == null) sortBy = "date";
+        if (sortOrder == null) sortOrder = "desc";
 
-        if (sortOrder == null)
-            sortOrder = "desc";
+        Sort.Direction direction = sortOrder.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
 
-        Sort.Direction direction;
-        if (sortOrder.equalsIgnoreCase("desc")) {
-            direction = Sort.Direction.DESC;
+        Pageable sortedPageable;
+        Sort sort;
+        if ("month".equalsIgnoreCase(sortBy)) {
+            sort = Sort.by(direction, "FUNCTION('MONTH', date)");
         } else {
-            direction = Sort.Direction.ASC;
+            sort = Sort.by(direction, sortBy);
         }
+        sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
-        Sort sort = Sort.by(direction, sortBy);
-        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        Integer month = (date != null) ? date.getMonthValue() : null;
 
-        if (year != null) {
-            return getTransactionsFilteredByYear(userId, date, categoryId, year, sortedPageable);
-        } else {
-            return getTransactionsWithoutYearFilter(userId, date, categoryId, sortedPageable);
-        }
-    }
-
-    private Page<T> getTransactionsFilteredByYear(Long userId, LocalDate date, Long categoryId, Integer year, Pageable pageable) {
-        if (userId != null && date != null && categoryId != null) {
-            return repository.findByUserIdAndYearAndCategoryId(userId, year, categoryId, pageable);
-        } else if (userId != null && date != null) {
-            return repository.findByUserIdAndYear(userId, year, pageable);
-        } else if (userId != null && categoryId != null) {
-            return repository.findByUserIdAndYearAndCategoryId(userId, year, categoryId, pageable);
-        } else if (date != null && categoryId != null) {
-            return repository.findByYearAndCategoryId(year, categoryId, pageable);
-        } else if (userId != null) {
-            return repository.findByUserIdAndYear(userId, year, pageable);
-        } else if (date != null) {
-            return repository.findByYear(year, pageable);
-        } else if (categoryId != null) {
-            return repository.findByYearAndCategoryId(year, categoryId, pageable);
-        } else {
-            return repository.findByYear(year, pageable);
-        }
-    }
-
-    private Page<T> getTransactionsWithoutYearFilter(Long userId, LocalDate date, Long categoryId, Pageable pageable) {
-        if (userId != null && date != null && categoryId != null) {
-            return repository.findByUserIdAndDateAndCategoryId(userId, date, categoryId, pageable);
-        } else if (userId != null && date != null) {
-            return repository.findByUserIdAndDate(userId, date, pageable);
-        } else if (userId != null && categoryId != null) {
-            return repository.findByUserIdAndCategoryId(userId, categoryId, pageable);
-        } else if (date != null && categoryId != null) {
-            return repository.findByDateAndCategoryId(date, categoryId, pageable);
-        } else if (userId != null) {
-            return repository.findByUserId(userId, pageable);
-        } else if (date != null) {
-            return repository.findByDate(date, pageable);
-        } else if (categoryId != null) {
-            return repository.findByCategoryId(categoryId, pageable);
-        } else {
-            return repository.findAll(pageable);
-        }
+        return repository.findFilteredTransactions(userId, year, month, categoryId, date, sortedPageable);
     }
 
     public BigDecimal getPageTotalTransactionAmount(Page<T> transactions) {
         return transactions.stream().map(Transaction::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public BigDecimal getAllTotalFilteredTransactionAmount(Long userId, LocalDate date, Long categoryId, Integer year, Pageable pageable) {
+    public BigDecimal getAllTotalFilteredTransactionAmount(Long userId, LocalDate date, Long categoryId, Integer year,
+                                                           Pageable pageable) {
         pageable = Pageable.unpaged();
         Page<T> allFilteredTransactions;
-
-        if (year != null) {
-            allFilteredTransactions = getTransactionsFilteredByYear(userId, date, categoryId, year, pageable);
-        } else {
-            allFilteredTransactions = getTransactionsWithoutYearFilter(userId, date, categoryId, pageable);
-        }
+        Integer month = (date != null) ? date.getMonthValue() : null;
+        allFilteredTransactions = repository.findFilteredTransactions(userId, year, month, categoryId, date, pageable);
 
         return allFilteredTransactions.stream().map(Transaction::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
