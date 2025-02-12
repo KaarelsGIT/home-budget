@@ -63,11 +63,6 @@ public abstract class TransactionController <T extends Transaction<T>> {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        System.out.println("received month: " + month);
-        System.out.println("received year: " + year);
-        System.out.println("received user: " + userId);
-        System.out.println("received category: " + categoryId);
-        System.out.println("received date: " + date);
         try {
             Pageable pageable = PageRequest.of(page, size);
 
