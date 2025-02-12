@@ -59,16 +59,21 @@ public abstract class TransactionController <T extends Transaction<T>> {
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) LocalDate date,
             @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer month,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        System.out.println("received month: " + month);
+        System.out.println("received year: " + year);
+        System.out.println("received user: " + userId);
+        System.out.println("received category: " + categoryId);
+        System.out.println("received date: " + date);
         try {
             Pageable pageable = PageRequest.of(page, size);
 
-            Page<T> transactions = service.getFilteredAndSortedTransactions(userId, date, categoryId, year, sortBy, sortOrder, pageable);
+            Page<T> transactions = service.getFilteredAndSortedTransactions(userId, date, categoryId, year, month, sortBy, sortOrder, pageable);
             BigDecimal pageTotal = service.getPageTotalTransactionAmount(transactions);
-//            BigDecimal allTotal = service.getAllTotalFilteredTransactionAmount(userId, date, categoryId, year, pageable);
-            BigDecimal allTotal = service.getAllTotalFilteredTransactionAmount(userId, date, categoryId, year, pageable);
+            BigDecimal allTotal = service.getAllTotalFilteredTransactionAmount(userId, date, categoryId, year, month, pageable);
 
             TransactionResponseDTO<T> responseDTO = new TransactionResponseDTO<>(transactions, pageTotal, allTotal);
             return ResponseEntity.ok((responseDTO));

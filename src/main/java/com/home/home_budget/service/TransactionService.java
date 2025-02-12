@@ -34,23 +34,20 @@ public class TransactionService<T extends Transaction<T>> {
         return repository.findById(id);
     }
 
-    public Page<T> getFilteredAndSortedTransactions(Long userId, LocalDate date, Long categoryId, Integer year,
-                                                    String sortBy, String sortOrder, Pageable pageable) {
+    public Page<T> getFilteredAndSortedTransactions(Long userId,
+                                                    LocalDate date,
+                                                    Long categoryId,
+                                                    Integer year,
+                                                    Integer month,
+                                                    String sortBy,
+                                                    String sortOrder,
+                                                    Pageable pageable) {
         if (sortBy == null) sortBy = "date";
         if (sortOrder == null) sortOrder = "desc";
 
         Sort.Direction direction = sortOrder.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-
-        Pageable sortedPageable;
-        Sort sort;
-        if ("month".equalsIgnoreCase(sortBy)) {
-            sort = Sort.by(direction, "FUNCTION('MONTH', date)");
-        } else {
-            sort = Sort.by(direction, sortBy);
-        }
-        sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
-
-        Integer month = (date != null) ? date.getMonthValue() : null;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
 
         return repository.findFilteredTransactions(userId, year, month, categoryId, date, sortedPageable);
     }
@@ -59,11 +56,14 @@ public class TransactionService<T extends Transaction<T>> {
         return transactions.stream().map(Transaction::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public BigDecimal getAllTotalFilteredTransactionAmount(Long userId, LocalDate date, Long categoryId, Integer year,
+    public BigDecimal getAllTotalFilteredTransactionAmount(Long userId,
+                                                           LocalDate date,
+                                                           Long categoryId,
+                                                           Integer year,
+                                                           Integer month,
                                                            Pageable pageable) {
         pageable = Pageable.unpaged();
         Page<T> allFilteredTransactions;
-        Integer month = (date != null) ? date.getMonthValue() : null;
         allFilteredTransactions = repository.findFilteredTransactions(userId, year, month, categoryId, date, pageable);
 
         return allFilteredTransactions.stream().map(Transaction::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
