@@ -5,8 +5,6 @@ import java.util.Optional;
 
 import com.home.home_budget.repository.UserRepository;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.home.home_budget.Model.User;

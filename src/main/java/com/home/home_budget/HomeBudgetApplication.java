@@ -9,8 +9,4 @@ public class HomeBudgetApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(HomeBudgetApplication.class, args);
 	}
-
-	//TODO:
-	// 1) Need Summary section
-
 }
