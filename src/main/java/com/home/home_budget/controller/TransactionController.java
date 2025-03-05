@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public abstract class TransactionController <T extends Transaction<T>> {
@@ -99,16 +100,17 @@ public abstract class TransactionController <T extends Transaction<T>> {
     }
 
     @DeleteMapping("delete/{id}")
-    public ResponseEntity deleteTransaction(@PathVariable Long id) {
+    public ResponseEntity<?> deleteTransaction(@PathVariable Long id) {
         try {
             Optional<T> toDelete = service.getTransactionById(id);
-            if (toDelete.isEmpty())
+            if (toDelete.isEmpty()) {
                 return ResponseEntity.notFound().build();
+            }
 
             service.deleteTransaction(id);
-            return ResponseEntity.ok("Income deleted successfully");
+            return ResponseEntity.ok(Map.of("success", true, "message", "Income deleted successfully"));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error deleting transaction");
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "Error deleting transaction"));
         }
     }
 }
