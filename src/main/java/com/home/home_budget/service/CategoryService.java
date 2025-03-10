@@ -66,6 +66,28 @@ public class CategoryService {
         }
     }
 
+    public List<Category> getFilteredAndSortedCategoriesAsList(String type, String sortOrder) {
+        if (sortOrder == null || sortOrder.isEmpty()) {
+            sortOrder = "asc";
+        }
+
+        Sort.Direction direction = sortOrder.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        Sort sort = Sort.by(direction, "name");
+
+        if (type == null || type.isEmpty()) {
+            return categoryRepository.findAll(sort);
+        }
+
+        try {
+            CategoryType categoryType = CategoryType.valueOf(type.toUpperCase());
+            return categoryRepository.findByType(categoryType, sort);
+        } catch (IllegalArgumentException e) {
+            return List.of();
+        }
+    }
+
+
     public Category updateCategory(Category category) {
         return categoryRepository.save(category);
     }
