@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +31,10 @@ public class CategoryService {
 
     public Optional<Category> getCategoryByName(String categoryName) {
         return categoryRepository.findByName(categoryName);
+    }
+
+    public Optional<Category> getCategoryByRecurringPayment(Boolean recurringPayment) {
+        return categoryRepository.findByRecurringPayment(recurringPayment);
     }
 
     public List<Category> getAllCategories() {
@@ -62,6 +65,28 @@ public class CategoryService {
             return Page.empty(pageable);
         }
     }
+
+    public List<Category> getFilteredAndSortedCategoriesAsList(String type, String sortOrder) {
+        if (sortOrder == null || sortOrder.isEmpty()) {
+            sortOrder = "asc";
+        }
+
+        Sort.Direction direction = sortOrder.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        Sort sort = Sort.by(direction, "name");
+
+        if (type == null || type.isEmpty()) {
+            return categoryRepository.findAll(sort);
+        }
+
+        try {
+            CategoryType categoryType = CategoryType.valueOf(type.toUpperCase());
+            return categoryRepository.findByType(categoryType, sort);
+        } catch (IllegalArgumentException e) {
+            return List.of();
+        }
+    }
+
 
     public Category updateCategory(Category category) {
         return categoryRepository.save(category);

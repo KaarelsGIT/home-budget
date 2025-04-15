@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     Optional<Category> findByName(String categoryName);
-
     Page<Category> findByType(CategoryType categoryType, Pageable pageable);
+    List<Category> findByType(CategoryType categoryType, Sort sort);
+    Optional<Category> findByRecurringPayment(Boolean recurringPayment);
 }

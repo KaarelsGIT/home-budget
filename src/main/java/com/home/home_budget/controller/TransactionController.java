@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public abstract class TransactionController <T extends Transaction<T>> {
@@ -40,6 +42,16 @@ public abstract class TransactionController <T extends Transaction<T>> {
         }
     }
 
+    @GetMapping("/years")
+    public ResponseEntity<List<Integer>> getListOfYears() {
+        try {
+            List<Integer> years = service.getListOfYears();
+            return ResponseEntity.ok(years);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
     @GetMapping("/all")
     public ResponseEntity<TransactionResponseDTO<T>> getFilteredAndSortedIncomes(
             @RequestParam(required = false) String sortBy,
@@ -48,15 +60,16 @@ public abstract class TransactionController <T extends Transaction<T>> {
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) LocalDate date,
             @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer month,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         try {
             Pageable pageable = PageRequest.of(page, size);
 
-            Page<T> transactions = service.getFilteredAndSortedTransactions(userId, date, categoryId, year, sortBy, sortOrder, pageable);
+            Page<T> transactions = service.getFilteredAndSortedTransactions(userId, date, categoryId, year, month, sortBy, sortOrder, pageable);
             BigDecimal pageTotal = service.getPageTotalTransactionAmount(transactions);
-            BigDecimal allTotal = service.getAllTotalFilteredTransactionAmount(userId, date, categoryId, year, pageable);
+            BigDecimal allTotal = service.getAllTotalFilteredTransactionAmount(userId, date, categoryId, year, month, pageable);
 
             TransactionResponseDTO<T> responseDTO = new TransactionResponseDTO<>(transactions, pageTotal, allTotal);
             return ResponseEntity.ok((responseDTO));
@@ -87,16 +100,17 @@ public abstract class TransactionController <T extends Transaction<T>> {
     }
 
     @DeleteMapping("delete/{id}")
-    public ResponseEntity deleteTransaction(@PathVariable Long id) {
+    public ResponseEntity<?> deleteTransaction(@PathVariable Long id) {
         try {
             Optional<T> toDelete = service.getTransactionById(id);
-            if (toDelete.isEmpty())
+            if (toDelete.isEmpty()) {
                 return ResponseEntity.notFound().build();
+            }
 
             service.deleteTransaction(id);
-            return ResponseEntity.ok("Income deleted successfully");
+            return ResponseEntity.ok(Map.of("success", true, "message", "Income deleted successfully"));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error deleting transaction");
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "Error deleting transaction"));
         }
     }
 }

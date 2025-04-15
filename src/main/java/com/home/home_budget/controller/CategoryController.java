@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -62,14 +63,22 @@ public class CategoryController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<Page<Category>> getAllFilteredAndSortedCategories(@RequestParam(required = false) String type,
-                                                                            @RequestParam(required = false) String sort,
-                                                                            @RequestParam(defaultValue = "0") int page,
-                                                                            @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<?> getAllFilteredAndSortedCategories(@RequestParam(required = false) String type,
+                                                               @RequestParam(required = false) String sort,
+                                                               @RequestParam(defaultValue = "0") int page,
+                                                               @RequestParam(defaultValue = "10") int size,
+                                                               @RequestParam(defaultValue = "false") boolean asList) {
         Pageable pageable = PageRequest.of(page, size);
+
         try {
-            Page<Category> categories = categoryService.getFilteredAndSortedCategories(type, sort, pageable);
-            return ResponseEntity.ok(categories);
+            if (asList) {
+                List<Category> listOfCategories = categoryService.getFilteredAndSortedCategoriesAsList(type, sort);
+                return ResponseEntity.ok(listOfCategories);
+            } else {
+                Page<Category> categories = categoryService.getFilteredAndSortedCategories(type, sort, pageable);
+                return ResponseEntity.ok(categories);
+            }
+
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
