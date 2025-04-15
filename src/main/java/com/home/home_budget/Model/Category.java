@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "categories")
 @NoArgsConstructor
@@ -28,5 +30,8 @@ public class Category {
 
     @Column(name = "recurring_payment")
     private boolean recurringPayment = false;
+
+    @Column(name = "duedate")
+    private Date duedate = null;
 
 }
