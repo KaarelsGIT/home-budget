@@ -31,7 +31,7 @@ public class Category {
     @Column(name = "recurring_payment")
     private boolean recurringPayment = false;
 
-    @Column(name = "duedate")
+    @Column(name = "due_date")
     private Date duedate = null;
 
 }
