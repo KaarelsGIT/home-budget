@@ -41,7 +41,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
         try {
             Optional<User> existing = userService.getUserById(id);

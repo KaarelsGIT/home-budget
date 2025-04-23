@@ -78,7 +78,7 @@ public abstract class TransactionController <T extends Transaction<T>> {
         }
     }
 
-    @PostMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<T> updateTransaction(@PathVariable Long id, @RequestBody T transaction) {
         try {
             Optional<T> existing = service.getTransactionById(id);
