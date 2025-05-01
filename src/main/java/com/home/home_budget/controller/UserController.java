@@ -32,10 +32,8 @@ public class UserController {
     public ResponseEntity<User> viewUser(@PathVariable Long id) {
         try {
             Optional<User> user = userService.getUserById(id);
-            if (user.isEmpty())
-                return ResponseEntity.notFound().build();
+            return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 
-            return ResponseEntity.ok(user.get());
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
