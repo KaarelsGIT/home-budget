@@ -2,12 +2,10 @@ package com.home.home_budget.Model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "incomes")
 @NoArgsConstructor
-@Data
 public class Income  extends Transaction<Income> {
 }
