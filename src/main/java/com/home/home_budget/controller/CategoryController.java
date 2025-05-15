@@ -34,10 +34,8 @@ public class CategoryController {
     public ResponseEntity<Category> viewCategory(@PathVariable Long id) {
         try {
             Optional<Category> category = categoryService.getCategoryById(id);
-            if (category.isEmpty())
-                return ResponseEntity.notFound().build();
+            return category.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 
-            return ResponseEntity.ok(category.get());
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
@@ -85,17 +83,17 @@ public class CategoryController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity deleteCategory(@PathVariable Long id) {
+    public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
         try {
             Optional<Category> category = categoryService.getCategoryById(id);
-            if (category.isEmpty())
+            if (category.isEmpty()) {
                 return ResponseEntity.notFound().build();
+            }
 
             categoryService.deleteCategory(id);
-            return ResponseEntity.ok().body("Category deleted successfully");
+            return ResponseEntity.ok("Category deleted successfully");
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
     }
-
 }
