@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Entity
-@Table(name = "categories")
+@Table(name = "categories",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"category_name", "type"})})
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

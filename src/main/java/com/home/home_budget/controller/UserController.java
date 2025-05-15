@@ -1,6 +1,7 @@
 package com.home.home_budget.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.home.home_budget.Model.User;
@@ -18,6 +19,7 @@ public class UserController {
 
     private final UserService userService;
 
+//    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public ResponseEntity<User> addUser(@RequestBody User user) {
         try {
@@ -39,6 +41,7 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
         try {
@@ -67,17 +70,26 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity deleteUser(@PathVariable Long id) {
-        try {
-            Optional<User> user = userService.getUserById(id);
-            if (user.isEmpty())
-                return ResponseEntity.notFound().build();
-
-            userService.deleteUser(id);
-            return ResponseEntity.ok().body("User deleted successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).build();
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        Optional<User> user = userService.getUserById(id);
+        if (user.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
+
+        userService.deleteUser(id);
+        return ResponseEntity.ok("User deleted successfully");
     }
+
+//    public ResponseEntity deleteUser(@PathVariable Long id) {
+//        try {
+//            Optional<User> user = userService.getUserById(id);
+//            if (user.isEmpty())
+//                return ResponseEntity.notFound().build();
+//
+//            userService.deleteUser(id);
+//            return ResponseEntity.ok().body("User deleted successfully");
+//        } catch (Exception e) {
+//            return ResponseEntity.status(500).build();
+//        }
 
 }
