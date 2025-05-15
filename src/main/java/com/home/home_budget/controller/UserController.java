@@ -1,5 +1,7 @@
 package com.home.home_budget.controller;
 
+import com.home.home_budget.dto.UserResponseDTO;
+import com.home.home_budget.dto.UserUpdateDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -21,10 +23,10 @@ public class UserController {
 
 //    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
-    public ResponseEntity<User> addUser(@RequestBody User user) {
+    public ResponseEntity<UserResponseDTO> addUser(@RequestBody User user) {
         try {
             User createdUser = userService.createUser(user);
-            return ResponseEntity.ok(createdUser);
+            return ResponseEntity.ok(new UserResponseDTO(createdUser));
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
@@ -43,7 +45,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody User user) {
         try {
             Optional<User> existing = userService.getUserById(id);
             if (existing.isEmpty())
@@ -51,9 +53,10 @@ public class UserController {
 
             User toUpdate = existing.get();
             toUpdate.setUsername(user.getUsername());
+            toUpdate.setRole(user.getRole());
 
-            User uppdatedUser = userService.updateUser(toUpdate);
-            return ResponseEntity.ok(uppdatedUser);
+            User updatedUser = userService.updateUser(toUpdate);
+            return ResponseEntity.ok(new UserResponseDTO(updatedUser));
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
