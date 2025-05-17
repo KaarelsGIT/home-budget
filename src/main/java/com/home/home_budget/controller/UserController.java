@@ -33,10 +33,12 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> viewUser(@PathVariable Long id) {
+    public ResponseEntity<UserResponseDTO> viewUser(@PathVariable Long id) {
         try {
             Optional<User> user = userService.getUserById(id);
-            return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+            return user
+                    .map(u -> ResponseEntity.ok(new UserResponseDTO(u)))
+                    .orElseGet(() -> ResponseEntity.notFound().build());
 
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
@@ -45,17 +47,13 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody User user) {
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @RequestBody UserUpdateDTO dto) {
         try {
             Optional<User> existing = userService.getUserById(id);
             if (existing.isEmpty())
                 return ResponseEntity.notFound().build();
 
-            User toUpdate = existing.get();
-            toUpdate.setUsername(user.getUsername());
-            toUpdate.setRole(user.getRole());
-
-            User updatedUser = userService.updateUser(toUpdate);
+            User updatedUser = userService.updateUser(existing.get(), dto);
             return ResponseEntity.ok(new UserResponseDTO(updatedUser));
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
@@ -63,10 +61,13 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<User>> getSortedAllUsers(@RequestParam(required = false) String sort) {
+    public ResponseEntity<List<UserResponseDTO>> getSortedAllUsers(@RequestParam(required = false) String sort) {
         try {
             List<User> users = userService.getSortedUsers(sort);
-            return ResponseEntity.ok(users);
+            List<UserResponseDTO> userDTOs = users.stream()
+                    .map(UserResponseDTO::new)
+                    .toList();
+            return ResponseEntity.ok(userDTOs);
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
@@ -82,17 +83,4 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.ok("User deleted successfully");
     }
-
-//    public ResponseEntity deleteUser(@PathVariable Long id) {
-//        try {
-//            Optional<User> user = userService.getUserById(id);
-//            if (user.isEmpty())
-//                return ResponseEntity.notFound().build();
-//
-//            userService.deleteUser(id);
-//            return ResponseEntity.ok().body("User deleted successfully");
-//        } catch (Exception e) {
-//            return ResponseEntity.status(500).build();
-//        }
-
 }

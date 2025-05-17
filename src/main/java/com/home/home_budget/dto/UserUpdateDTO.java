@@ -7,5 +7,6 @@ import lombok.Data;
 public class UserUpdateDTO {
 
     private String username;
+    private String password;
     private UserRole role;
 }

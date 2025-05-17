@@ -3,6 +3,7 @@ package com.home.home_budget.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.home.home_budget.dto.UserUpdateDTO;
 import com.home.home_budget.repository.UserRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -57,8 +58,15 @@ public class UserService {
 
     }
 
-    public User updateUser(User user) {
-        return userRepository.save(user);
+    public User updateUser(User existingUser, UserUpdateDTO dto) {
+        existingUser.setUsername(dto.getUsername());
+        existingUser.setRole(dto.getRole());
+
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            existingUser.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        return userRepository.save(existingUser);
     }
 
     public boolean userExists(Long id) {
