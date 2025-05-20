@@ -3,6 +3,7 @@ package com.home.home_budget.controller;
 import com.home.home_budget.Model.User;
 import com.home.home_budget.dto.AuthRequestDTO;
 import com.home.home_budget.dto.AuthResponseDTO;
+import com.home.home_budget.service.JwtService;
 import com.home.home_budget.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
+
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequestDTO authRequest) {
@@ -33,6 +36,7 @@ public class AuthController {
             return ResponseEntity.status(401).body(new AuthResponseDTO("Vale parool"));
         }
 
-        return ResponseEntity.ok(new AuthResponseDTO("Login edukas, roll: " + user.getRole()));
+        String token = jwtService.generateToken(user);
+        return ResponseEntity.ok(new AuthResponseDTO(token, user.getRole().name(), "Login edukas"));
     }
 }
