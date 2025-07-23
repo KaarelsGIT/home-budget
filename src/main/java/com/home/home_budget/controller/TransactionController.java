@@ -32,11 +32,8 @@ public abstract class TransactionController <T extends Transaction<T>> {
     public ResponseEntity<T> getTransactionById(@PathVariable Long id) {
         try {
             Optional<T> transaction = service.getTransactionById(id);
-            if (transaction.isEmpty()) {
-                return ResponseEntity.notFound().build();
-            }
+            return transaction.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 
-            return ResponseEntity.ok(transaction.get());
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
